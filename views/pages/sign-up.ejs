@@ -1,0 +1,23 @@
+<section name='sign-up' class="container"> 
+ <form name="sign-up" method="post" action="/signUp?_csrf=<%= csrfToken %>"> 	
+ 	<div class="col-md-6 mx-auto">
+ 		<h1 class="text-center">Create your account</h1>
+ 		<p class="text-center">Already have a Platform account? <a href="/sign-in">Log In</a></p>
+ 		<% include ../partials/flash %>
+	<div class="form-group">
+	    <label for="name">Name:</label>
+	    <input placeholder="Enter name" type="text" class="form-control" name="name" id="name" autofocus>
+	 </div>
+	 <div class="form-group">
+	    <label for="email">Email address:</label>
+	    <input type="email" placeholder="Eneter email" name="email" class="form-control" id="email">
+	 </div>
+	 <div class="form-group">
+	    <label for="password">Password:</label>
+	    <input type="password" class="form-control" placeholder="Enter password" id="password" name="password">
+	 </div>
+	 <input type="submit" name="register" value="SignUp" class="btn">
+	 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+ 	</div>		
+ </form>
+ </section> 

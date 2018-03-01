@@ -1,0 +1,111 @@
+<div class="container-fluid">
+      <div class="row">                
+        <div class="col-md-12">        	
+          <h1 class="page-header">Accounts</h1>
+          <% include ../../partials/flash %>          
+          <div class="row">            
+            <div class="col-md-12">
+
+            <form name="stellar" method="post" action="/dashboard/accounts/stellar">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">   
+              <input type="submit" name="stellar" class="pull-right btn btn-primary" value="Create stellar account">    
+            </form>
+            <a href="javascript:void(0);" data-toggle="modal" data-placement="top" data-target="#mergeAccounts" title="Click to merge stellar account" class="btn btn-primary">Merge Account</a>
+            <div class="modal fade" id="mergeAccounts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+              <div class="modal-dialog modal-lg">
+                <form name="merge-account" method="post" action="/dashboard/accounts/merge">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                      <h4 class="modal-title" id="myModalLabel">Merge Account</h4>
+                    </div>
+                    <div class="modal-body">
+                      <div class="row">  
+                      <div class="col-lg-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                Source Account
+                            </div>
+                            <div class="panel-body">
+                                <p>
+                                  <select class="form-control" name="source">
+                                    <option value="0">Select source account</option>
+                                  <% for(i=0;i<accounts.length;i++) {%>
+                                  <option value="<%= accounts[i].private_key %>">              
+                                    <%= accounts[i].public_key %>
+                                    </option>
+                                  <% } %>
+                                  </select>
+                                </p>
+                            </div>
+                            <div class="panel-footer">
+                                This account should be deleted.
+                            </div>
+                        </div>
+                      </div>
+                        <div class="col-lg-6">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                Destination Account
+                            </div>
+                            <div class="panel-body">
+                                <p>
+                                  <select class="form-control" name="destination">
+                                    <option value="0">Select source account</option>
+                                  <% for(i=0;i<accounts.length;i++) {%>
+                                  <option value="<%= accounts[i].public_key %>">              
+                                    <%= accounts[i].public_key %>
+                                    </option>
+                                  <% } %>
+                                  </select>
+                                </p>
+                            </div>
+                            <div class="panel-footer">
+                                Transfers native balance to destination account.
+                            </div>
+                        </div>
+                </div>
+                <p class="col-lg-12">
+                      Merge operation transfer source account native balance(XLM) to destination account, after success source account should be deleted from ledger. 
+                    </p>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <input type="submit" class="btn btn-primary" name="meger-account" value="Merge Account">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    </div>
+                </div><!-- /.modal-content -->
+              </form>
+              </div> <!-- /.modal-dialog -->
+            </div><!-- .modal -->
+            <div class="clearfix"></div>
+             <br>
+            </div>
+          </div>         
+
+          <div class="row">
+            <% for(i=0;i<accounts.length;i++) {%>
+            <div class="col-md-6">
+            <div class="well">
+              <div class="col-md-3">
+              <label>Address : </label></div>
+              <div class="col-md-9"><span style="word-wrap: break-word;"><%= accounts[i].public_key %> </span></label></div>
+              <div class="clearfix"></div>
+              <div class="col-md-3">
+              <label>Date : </label></div>
+              <div class="col-md-9"><span style="word-wrap: break-word;"><%= accounts[i].created_at %> </span></label></div>
+              <div class="clearfix"></div>
+              <div class="col-md-3">
+              <label>Balance : </label></div>
+              <div class="col-md-9"><a href="/dashboard/accounts/balance/<%= accounts[i].public_key %>" class="btn btn-success">Balance</a></label></div>
+              <div class="clearfix"></div>             
+            </div>
+            </div>               
+                    
+                <% } %>
+          
+        </div>
+          </div>
+        </div>
+      </div><!-- .container-fluid -->

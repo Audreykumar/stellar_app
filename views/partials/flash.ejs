@@ -1,0 +1,16 @@
+<div id="flash-messages" class="">
+    <% if ( flash) { %>
+    <% if(flash.danger) { %>
+   	    <div class="alert alert-danger">
+	      <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+	      <%= flash.danger %>
+	    </div>
+	  <% } %> 
+	  <% if(flash.success) { %>
+   	    <div class="alert alert-success">
+	      <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+	      <%= flash.success %>
+	    </div>
+	  <% } %> 
+	<% } %>
+</div>

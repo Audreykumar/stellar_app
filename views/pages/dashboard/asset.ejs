@@ -1,0 +1,206 @@
+<div class="container-fluid">
+      <div class="row">       
+        <div class="col-md-12">        	
+          <h1 class="page-header">Assets</h1>
+          <% include ../../partials/flash %>
+          <div class="row">            
+            <div class="col-md-12">
+              <h4>One of Stellar’s most powerful features is the ability to trade any kind of asset, US dollars, Nigerian naira, bitcoins, special coupons, ICO tokens or just about anything you like.</h4>
+            <p>Lumens (XLM) are the native currency of the network. A lumen is the only asset type that can be used on the Stellar network that doesn’t require an issuer or a trustline. Any account can hold lumens. You can trade lumens for other assets in the network.</p>
+            <label>Right now there are 3 possible types of assets in the Stellar network:</label>
+            <ul>
+              <li>native XLM asset (ASSET_TYPE_NATIVE)</li>
+              <li>issued assets with asset code of maximum 4 characters (ASSET_TYPE_CREDIT_ALPHANUM4),</li>
+              <li>issued assets with asset code of maximum 12 characters (ASSET_TYPE_CREDIT_ALPHANUM12).</li>
+            </ul>          
+            </div>
+          </div>
+          <div class="row">
+          <div class="col-md-6">
+            <div class="well">
+            <h4 style="margin-top: 0px;">Create your custom asset!</h4>
+            <form name="asset" method="post" action="/dashboard/asset/new?_csrf=<%= csrfToken %>">
+              
+              
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                <label>Asset name:</label>
+                <input type="text" class="form-control" name="asset_name" placeholder="Add asset name" autofocus>
+              </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                <label>Asset image url:</label>
+                <input type="text" class="form-control" name="asset_image_url" placeholder="Add asset image url">
+              </div>
+              </div>              
+              <div class="col-md-6">
+                <div class="form-group">
+                <label>Asset code:</label>
+                <input type="text" class="form-control" name="code" placeholder="Add asset code like : USD" maxlength="12">
+              </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                <label>Asset limit:</label>
+                <input type="text" class="form-control" name="asset_limit" placeholder="Limit your asset like 1000" maxlength="10" >
+              </div>
+              </div>
+            </div> <!-- row -->
+              <div class="row">
+              <div class="col-md-6">
+              <div class="form-group">
+                <label>Asset issuer:</label>
+                <select class="form-control" name="asset_issuer">
+                  <option>Select issuer account</option>
+                  <% accounts.forEach(function(account,index) {%>
+                  <option value="<%= account.private_key %>-Id-<%= account.id %>"><%= account.private_key %></option>
+                  <% }); %>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Asset reciever:</label>
+                <select class="form-control" name="asset_reciever">
+                  <option>Select reciever account</option>
+                  <% accounts.forEach(function(account,index) {%>
+                  <option value="<%= account.private_key %>-Id-<%= account.id %>"><%= account.private_key %></option>
+                  <% }); %>
+                </select>
+              </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                <label>Asset description:</label>
+                <textarea class="form-control" name="asset_desc" placeholder="Add asset description"></textarea>
+              </div>
+              </div>
+            
+          </div>
+              <input type="submit" class="btn btn-default" name="create" value="Create Asset">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            </form>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="well">
+              <h4>Your asset is here!</h4>
+              <ul>
+                <% assets.forEach(function(asset,index){ %>
+                  <li><%= asset.asset_code %></li>
+
+                <% }) %> 
+                
+              </ul>
+            </div>
+          </div>
+          </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ol>
+              <li><label>Step 1 – Create issuing account</label>
+
+                <p>
+                  Select a issuing account.
+                </p>
+              </li>
+              <li><label>Step 2 – Create distribution account</label>
+                <p>
+                  Select a distribution account.
+                </p>
+              </li>
+              <li><label>Step 3 – Trust the issuing account</label>
+                <p>
+                  This is the account from which token or asset is created.
+                </p>
+              </li>
+              <li><label>Step 4 – Create tokens</label>
+                <p>
+                  Now that the distribution account trusts the issuing account the tokens can be created. This is done by simply sending a payment from the issuing account to the distribution account as done
+                </p>
+              </li>
+              <li><label>Step 5 – Publish information about your token</label>
+                <p>
+                  Describe about your asset or token.
+                </p>
+              </li>
+              <li><label>Step 6 – Limit the supply</label>
+                <p>
+                  Great! Your token exists and you have told people what it is all about. Now you likely want to prove to the world that you won’t flood the market with your tokens. The simplest way to do this is to lock the issuing account so that it can no longer make transactions.
+                </p>
+              </li>
+              <li><label>Step 7 – Distribute your Token</label>
+                <p>
+                  Ok now your token exists and everything is setup. The final step is to get them in the hands of the people.
+                </p>
+              </li>
+              
+
+            </ol>
+          </div>
+          <div class="col-md-12">
+        <div class="well">
+        <label>Step By Step</label>
+        <ol>
+          <li>
+            Choose Where Account That Will Be Issuer And Truster
+          </li>
+          <li>
+            Login To Truster Account
+          </li>
+          <li>
+            Choose Account Operations
+          </li>
+          <li>
+            Choose Change Trust
+          </li>
+          <li>
+            Choose Asset Type(4 alphanumeric=You Asset Name Has Less Than
+          </li>
+          <li>
+            5 Alphanumeric,12 Alphanumeric =Your Asset Name Has Less Than 13 Alphanumeric
+          </li>
+          <li>
+            Fill Asset Code With Asset Name
+          </li>
+          <li>
+            Fill Asset Issuer With Your Issuer Account Address
+          </li>
+          <li>
+            Leave Trust Limit Blank
+          </li>
+          <li>
+            Click Submit
+          </li>
+          <li>
+            Login To Wallet Issuer
+          </li>
+          <li>
+            Choose Make A Payment
+          </li>
+          <li>
+            Choose Asset Type(Like When You Create Trustline)
+          </li>
+          <li>
+            Fill Asset Name & Issuer Like When Creatin Trustline
+          </li>
+          <li>
+            Fill Destination address With walllet Truster Address
+          </li>
+          <li>
+            Fill The Amount(Max:Infinite)
+          </li>
+          <li>
+            Click Send
+          </li>
+          <li>
+            Login To Truster Account If Thre Are New Payment From Issuer Account That Means It Success
+          </li>
+        </ol>
+        </div>
+        </div>
+          </div>
+        </div>
+      </div><!-- .container-fluid -->

@@ -1,0 +1,27 @@
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+ <div class="container">
+<div class="navbar-header">
+ <a title="Stellar wallet" class="navbar-brand" href="/">
+ <span class="glyphicon glyphicon-folder-open"></span>
+ Wallet<sup><big> 4 </big></sup>U </a>
+ </div>
+<ul class="nav navbar-nav pull-right">
+	<li title="Pick stellar network" class="dropdown" id="networkPicker">
+        <a style="text-transform: capitalize;" class="dropdown-toggle" data-toggle="dropdown" href="#"><%= user.network!=null ? user.network : 'Test'  %> <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li <%if(user.network=='test' || null) {%> class='active' <% } %>><a title="https://horizon-testnet.stellar.org" href="/setNetwork?type=test">Test</a></li>
+          <li class="<%= user.network=='public' ?'active' : '' %>" ><a title="https://horizon.stellar.org" href="/setNetwork?type=public">Public</a></li>         
+        </ul>
+  </li>
+ <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%= user.name %>
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li <% if (page_name === 'dashboard_profile') { %>class="active" <% } %>><a href="/dashboard/profile">Profile</a></li>
+          <li><a href="/logOut">logout</a></li>          
+        </ul>
+  </li>
+  
+ </ul>
+</div>
+</nav>

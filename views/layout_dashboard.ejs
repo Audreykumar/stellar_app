@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Stellar admin</title>    
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- MetisMenu CSS -->
+    <link href="/public/css/metisMenu.min.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link href="/public/css/sb-admin-2.min.css" rel="stylesheet" />
+
+    <!-- Morris Charts CSS -->
+    <link href="/public/css/morris.css" rel="stylesheet" />
+    <link href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/dashboard">Admin Dashboard</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+               
+                <!-- /.dropdown -->                
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                      <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-tasks fa-fw"></i> New Task
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Alerts</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-alerts -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                                                
+                        <li <% if (page_name === 'dashboard_profile') { %>class="active" <% } %>><a href="/dashboard/profile"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="/logOut"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        <li <% if (page_name === 'dashboard') { %>class="active" <% } %>>
+                            <a  href="/dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                         <li <% if (page_name === 'dashboard_accounts') { %>class="active" <% } %> ><a <% if (page_name === 'dashboard_accounts') { %>class="active" <% } %> href="/dashboard/accounts/">
+                        <i class="fa fa-sitemap fa-fw"></i>
+                         Accounts</a></li>
+                         <li <% if (page_name === 'dashboard_asset') { %>class="active" <% } %>><a <% if (page_name === 'dashboard_asset') { %>class="active" <% } %> href="/dashboard/asset/"><i class="fa fa-table fa-fw"> </i> Assets</a></li>
+                        <li <% if (page_name === 'dashboard_offers') { %>class="active" <% } %>><a <% if (page_name === 'dashboard_offers') { %>class="active" <% } %> href="/dashboard/account/offers/">
+                        <i class="fas fa fa-gift"></i> Offers</a></li>
+                        <li <% if (page_name === 'order_book') { %>class="active" <% } %>><a <% if (page_name === 'order_book') { %>class="active" <% } %> href="/dashboard/orderbook">
+                        <i class="fa fas fa-book"></i> Order Book</a></li>
+                        <li <% if (page_name === 'payments') { %>class="active" <% } %>><a href="/dashboard/payments" <% if (page_name === 'payments') { %>class="active" <% } %>>
+                          <i class="fa fa-credit-card far"></i> Payments</a></li>
+                        <li <% if (page_name === 'dashboard_paths') { %>class="active" <% } %>><a href="/dashboard/paths/" <% if (page_name === 'dashboard_paths') { %>class="active" <% } %> ><i class="fa fab fa-connectdevelop"></i> Path payments</a></li>
+                        <li <% if (page_name === 'dashboard_transactions') { %>class="active" <% } %>><a href="/dashboard/transactions/" <% if (page_name === 'dashboard_transactions') { %>class="active" <% } %>>
+                          <i class="fa fa-sitemap fa-fw"></i> Transactions</a></li>
+                        
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+          <%- body -%>
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>   
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <!-- Custom Theme JavaScript -->    
+    <script src="/public/js/sb-admin-2.min.js"></script>
+    <script src="/public/js/metisMenu.min.js"></script>
+   <%- defineContent('MorrisCharts') %>
+   <%- defineContent('pageScript') %>         
+</body>
+
+</html>

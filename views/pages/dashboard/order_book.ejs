@@ -1,0 +1,124 @@
+<section class="order_book">
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Order Book</h1>
+			<% include ../../partials/flash %>		
+		</div>
+		<div class="col-md-12">
+			<form name="order-book" method="GET" action="/dashboard/orderbook/find"> 
+				<div class="col-md-6">
+				<div class="form-group">
+						<label>Selling Asset (<small style="font-weight: normal;">Base Asset</small>) </label>
+						<select name="selling_asset" class="form-control asset-type">
+							<option value="0">Select selling asset type</option>
+							<option value="native">Native</option>
+							<option value="credit_alphanum4">Alphanumeric 4</option>
+							<option value="credit_alphanum12">Alphanumeric 12</option>
+						</select>
+					<div class="non_native_asset" style="display: none;">
+						<% assets.forEach(function(asset){ %>
+							<label>
+								<input type="radio" name="non_native_selling_code" value="<%= asset.asset_code %>-IS-<%= asset.issuer %>">
+								<%= asset.asset_code %>
+							</label>
+						<% }) %>
+                    </div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+						<label>Buying Asset (<small style="font-weight: normal;">Counter Asset</small>)</label>
+						<select name="buying_asset" class="form-control asset-type">
+							<option value="0">Select buying asset type</option>
+							<option value="native">Native</option>
+							<option value="credit_alphanum4">Alphanumeric 4</option>
+							<option value="credit_alphanum12">Alphanumeric 12</option>
+						</select>
+					<div class="non_native_asset" style="display: none;">
+                      <% assets.forEach(function(asset){ %>
+							<label>
+								<input type="radio" name="non_native_buying_code" value="<%= asset.asset_code %>-IS-<%= asset.issuer %>">
+								<%= asset.asset_code %>
+							</label>
+						<% }) %>
+
+                    </div>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="col-md-12">
+				<input type="button" id="OrderBook" name="OrderBook" value="Order Book">
+				<!-- <input type="hidden" name="_csrf" value="<%= csrfToken %>"> -->
+			</div>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="response">
+				
+			</div><!-- .response -->
+		</div>
+	</div>
+</section><!-- .order_book -->
+<%- contentFor('pageScript') %>
+	<script type="text/javascript">
+		$(document).ready(function(){
+            $(".asset-type").change(function(){
+              if($(this).val()!='native')
+              {
+                $(this).parents(".form-group").find(".non_native_asset").show();
+              }
+              else
+              {
+                $(this).parents(".form-group").find(".non_native_asset").hide();
+              }
+            });
+            $("#OrderBook").click(function(){
+            	var _html="";
+            	$(".response").html("Loading ..")
+            	$.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '/dashboard/orderbook/find',
+            data: $("form").serialize(),     
+            success: function(res) {
+              console.log(res);                
+              //console.log(res._embedded.records);
+              _html+="<div class='col-md-6'><table class='table'><caption>Bids</caption>";
+              _html+="<thead>";
+              _html+="<tr><th>Amount</th><th>Price</th></tr>";
+              _html+="</thead>";
+              for(var i=0;i<res.bids.length;i++)
+              {
+              	_html+="<tr>";
+              	_html+="<td>"+res.bids[i].amount+"</td>";
+              	_html+="<td>"+res.bids[i].price+"</td>";
+              	_html+="<tr>";
+              }
+              _html+="</table></div>";
+
+              _html+="<div class='col-md-6'><table class='table'><caption>Asks</caption>";
+              _html+="<thead>";
+              _html+="<tr><th>Amount</th><th>Price</th></tr>";
+              _html+="</thead>";
+              for(var i=0;i<res.asks.length;i++)
+              {
+              	_html+="<tr>";
+              	_html+="<td>"+res.asks[i].amount+"</td>";
+              	_html+="<td>"+res.asks[i].price+"</td>";
+              	_html+="<tr>";
+              }
+              _html+="</table></div>";
+              $(".response").html(_html);
+            },
+            error: function(err)
+            {
+              console.log("error")
+              console.log(err)
+              $(".response").html(_html);
+            }
+            });
+            });
+          });
+	</script>

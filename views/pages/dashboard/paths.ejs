@@ -1,0 +1,142 @@
+<div class="container-fluid">
+      <div class="row">               
+        <div class="col-md-12">        	
+          <h1 class="page-header">Path payments</h1>
+          <% include ../../partials/flash %>
+          <div class="row">
+            <form action="/dashboard/paths/find" method="get" class="col-md-12" name="path-form">
+                <h4 class="text-center">Find Payment Paths</h4>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Source Account</label>
+                    <select class="form-control" name="source_account">
+                      <option value="0">Select your source account</option>
+                      <% for(i=0;i<accounts.length;i++) { %>
+                        <option value="<%= accounts[i].public_key %>"><%= accounts[i].public_key %></option>
+                      <% } %>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Destination Account</label>
+                    <input type="text" class="form-control" name="destination_account" placeholder="Enter destination account address" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Destination Asset Type</label>
+                    <select class="form-control destination_asset_type" name="destination_asset_type">
+                      <option value="0">Select asset type</option>
+                      <option value="native">Native</option>
+                      <option value="credit_alphanum4">Alphanumeric 4</option>
+                      <option value="credit_alphanum12">Alphanumeric 12</option>
+                    </select>
+                    <div class="non_native_asset" style="display: none;">
+                      <br>
+                      <input type="text" name="destination_asset_code" placeholder="Destination Asset Code" class="form-control" />
+                      <br>
+                      <input type="text" name="destination_asset_issuer" placeholder="Destination Asset Issuer" class="form-control" />
+
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Destination amount</label>
+                    <input class="form-control" type="text" name="destination_amount" value="" placeholder="Enter amount sended to destination">
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <a id="find_path_payments" href="javascript:void(0);" class="btn btn-default">Find paths</a>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  </div>
+                </div>
+            </form>
+        </div>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="path-results">
+
+                </div>
+            </div>
+        </div><!-- row -->
+      </div><!-- .container-fluid -->
+      <%- contentFor('pageScript') %>
+        <script type="text/javascript">
+          $(document).ready(function(){
+            $(".destination_asset_type").change(function(){
+              if($(this).val()!='native')
+              {
+                $(".non_native_asset").show();
+              }
+              else
+              {
+                $(".non_native_asset").hide();
+              }
+            });
+
+          });
+          $("#find_path_payments").click(function(){
+            $(".path-results").html("Loading..");
+            console.log($("form").serialize());
+            // Validate data before submiting
+            if($.trim($("select[name='source_account']").val())!="0" && $.trim($("input[name='destination_account']").val())!="" && $.trim($("select[name='destination_asset_type']").val())!="0" && $.trim($("input[name='destination_account']").val())!="" && $.trim($("input[name='destination_amount']").val())!="" )
+            {       
+              // Start ajax if validated
+            $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: 'https://horizon-testnet.stellar.org/paths',
+            data: $("form").serialize(),     
+            success: function(res) {
+              console.log(res);                
+              console.log(res._embedded.records);
+              var _html="<table class='table'>";
+              _html+="<thead>";
+              _html+="<tr><th>Destination amount</th><th>Source Amount</th><th>Source asset type</th> <th class='text-center'>Avialable Path</th></tr>";
+              _html+="</thead>";
+              for(i=0;i<res._embedded.records.length;i++)
+              {
+                _html+="<tr>";
+                _html+="<td>"+res._embedded.records[i].destination_amount+"</td>";
+                // _html+="<td>"+res._embedded.records[i].destination_asset_type+"</td>";
+                _html+="<td> "+res._embedded.records[i].source_amount+" </td>";
+                _html+="<td> "+res._embedded.records[i].source_asset_type+" </td>";
+                _html+="<td> ";
+                if(res._embedded.records[i].path.length)
+                {
+
+                  for(j=0;j<res._embedded.records[i].path.length;j++)
+                  {
+                    _html+="<label> Asset Code: "+res._embedded.records[i].path[j].asset_code+"</label>";
+                    _html+="<label style='word-wrap:break-word;'> Asset Issuer: "+res._embedded.records[i].path[j].asset_issuer+"</label>";
+                    _html+="<label> Asset Type: "+res._embedded.records[i].path[j].asset_type+"</label>";
+                  }
+                }
+                _html +=" </td>";                
+                _html+="</tr>";
+              }
+              _html+="</table>";
+              
+              $(".path-results").html(_html);
+            },
+            error: function(err)
+            {
+              console.log("error")
+              console.log(err);
+              $(".path-results").html(err.statusText);
+            }
+            });
+
+            }
+            else
+            {
+              $(".path-results").html("Please enter required fields");
+            }
+          });
+        </script>

@@ -1,0 +1,185 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">        	
+      <h1 class="page-header">Payments</h1>
+      <% include ../../partials/flash %>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="well">          
+            Send Payment     
+            </div>
+            <ul class="nav nav-pills" style="margin-bottom: 20px;">
+              <li class="active"><a title="Payments inside your platform account(<%=user.name %>)" data-toggle="pill" href="#self">To Self</a></li>              
+              <li><a title="Payments to different platform registered accounts." data-toggle="pill" href="#other">To Other</a></li>
+            </ul> 
+             <div class="tab-content">
+    <div id="self" class="tab-pane fade in active well">
+      <div class="loading-spin hidden">
+        <p>Assets Loading....</p>
+      </div>
+      <p>Payments inside your platform account(<%=user.name %>)</p>
+      <form method="post" name="payments" action="/dashboard/accounts/payment">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">             
+              <select id="account-balance" class="form-control" name="sender">
+                <option>Select Sending account</option>
+              <% for(i=0;i<accounts.length;i++) {%>
+                <option value="<%= accounts[i].private_key %>-Id-<%= accounts[i].id %>"><%= accounts[i].public_key %></option>
+              <% } %>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">              
+              <select class="form-control" name="reciever">
+                <option>Select Recieving account</option>
+              <% for(i=0;i<accounts.length;i++) {%>
+                <option value="<%= accounts[i].public_key %>-Id-<%= accounts[i].id %>"><%= accounts[i].public_key %></option>
+              <% } %>
+              </select>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="form-group">
+           <label>Asset type:</label>               
+        <div class="radio" id="user_assets">
+         <div class="col-md-6"><label><input type="radio">XLM (Native)</label></div>
+        </div>
+        <div class="clearfix"></div>
+        </div>
+      
+        <div class="form-group">
+              <label>Transaction memo:</label>
+              <input class="form-control" type="text" name="memo" value="" placeholder="Memo" required/>
+            </div>
+        <div class="form-group">
+              <label>Amount<small> (xlm) </small>:</label>
+              <input class="form-control" type="text" name="amount" value="" placeholder="Amount" required>
+        </div>
+        <div class="form-group">
+              <input type="hidden" name="type" value="self">
+          <input type="submit" name="submit" value="Submit" class="btn btn-primary">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        </div>
+     
+      </form>
+    </div>
+    <div id="other" class="tab-pane fade in well">
+      <p>Payments with different accounts on the platform.</p>
+      <form method="post" name="payments" action="/dashboard/accounts/payment?_csrf=<%= csrfToken %>">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+            <input name="type" type="hidden" value="other">             
+              <select class="form-control" name="sender">
+                <option>Select Sending account</option>
+              <% for(i=0; i<accounts.length; i++) {%>
+                <option value="<%= accounts[i].private_key %>-Id-<%= accounts[i].id %>"><%= accounts[i].public_key %></option>
+              <% } %>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">              
+              <select class="form-control" name="reciever">
+                <option>Select Recieving account</option>
+              <% for(i=0;i<users.length;i++) {%>
+              <% if (user.id != users[i].id ) {%>
+                <option value="<%= users[i].id %>"><%= users[i].name %></option>
+                <% } %>
+              <% } %>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+              <label>Transaction memo:</label>
+              <input class="form-control" type="text" name="memo" value="" placeholder="Memo" required/>
+            </div>
+        <div class="form-group">
+              <label>Amount<small> (xlm) </small>:</label>
+              <input class="form-control" type="text" name="amount" value="" placeholder="Amount" required>
+        </div>
+        <div class="form-group">
+              
+          <input type="submit" name="submit" value="Submit" class="btn btn-primary">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        </div>
+     
+      </form>
+    </div>
+    </div>    
+            </div>
+            <div class="col-md-6">
+            <div class="well">          
+            Recieve Payments
+            </div>         
+            </div>
+          </div>         
+          
+          </div>
+        </div>
+      </div><!-- .container-fluid -->
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function(event) { 
+
+
+  $("#account-balance").on('change',function(){
+    console.log($("#account-balance option:selected").text());
+    $(".loading-spin").removeClass("hidden");
+    var public_key = $("#account-balance option:selected").text();
+    $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '/getStellarAccount/?public_key='+public_key,            
+            success: function(assets) {
+              console.log(assets);
+                var _html="";
+                for(i=0;i<assets.length;i++)
+                {
+                  _html+="<div class='col-md-6'> <label title= 'Asset type : "+assets[i].asset_type+"'><input type='radio' value='' name='asset_type' value='"+assets[i].asset_type+"'> ";
+                  if(assets[i].asset_type!='native')
+                  {
+                    _html+=assets[i].asset_code+" ("+assets[i].balance;
+                  }
+                  else
+                  {
+                    _html+="XLM ("+assets[i].balance+" ";
+                  }
+                  _html+=") &nbsp;</label></div>";
+                  
+                }
+                $("#user_assets").html(_html);
+                $(".loading-spin").addClass("hidden");
+            },
+            error: function(err)
+            {
+              console.log("error")
+              console.log(err)
+            }
+                    });
+  });
+});
+</script>
+
+<style type="text/css">
+  .loading-spin {
+    position: absolute;
+    background: #f1eeeb;
+    width: 100%;
+    height: 100%;
+    margin: -19px;
+    text-align: center;
+    z-index: 9;
+}
+.loading-spin p
+{
+  margin-top: 45%;
+}
+#self
+{
+  position: relative;
+}
+</style>

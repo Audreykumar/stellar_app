@@ -1,0 +1,154 @@
+<div class="container-fluid">
+      <div class="row">              
+        <div class="col-md-12">        	
+          <h1 class="page-header">Offers</h1>
+          <% include ../../partials/flash %>          
+          <div class="row">
+            <div class="col-md-12">
+              <h4 class="sub-header">List of all stellar accounts </h4>
+              <% accounts.forEach(function(account){ %>
+              <div class="offers-stelar">
+                <div class="col-md-6 col-sm-12">
+                  <label><%= account.public_key %></label>
+                </div>
+                  <div class="col-md-6 col-sm-12">
+                    <a href="javascript:void(0);" class="btn btn-default pull-right create-stellar-offer">Creat a new offer</a>
+                    <a style="margin-right: 20px;" title="View your account offer for trading" class="btn pull-right btn-default" href="/checkOffer/<%= account.public_key %>">Check Offer</a>
+                  </div>
+                  <% if (account_offer){ %>                 
+                  <% if(account.public_key==account_offer.account_id) {%>
+                  <div class="clearfix"></div>
+                  <div class="col-md-12 col-sm-12">                    
+                    <div class="alert alert-info alert-dismissable fade in">
+                      <a id="close-offer" href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                      <% if(account_offer.result.records.length) { %>
+                      <table class="table table-hover">
+                        <tr><th>Selling</th>
+                          <th>Buying</th>
+                          <th>Price</th>
+                          <th>Amount</th>
+                          <th>Action</th>
+                        </tr>
+                        <% account_offer.result.records.forEach(function(offer,index) {%>
+                          <tr>
+                            <td><%= offer.selling.asset_type!='native' ?offer.selling.asset_code  : "XLM" %></td>
+                            <td><%= offer.buying.asset_type!='native' ?offer.buying.asset_code  : "XLM" %></td>
+                            <td><%= offer.price %></td>
+                            <td><%= offer.amount %></td>
+                            <td><a title="Remove offers" class="btn btn-danger label" href="javascript:void(0);">Remove</a></td>
+                          </tr>
+                        <% })%>
+                      </table>                        
+                      <% } 
+                        else
+                        {  %>
+                        No offers avialable at this moment.
+                        <% } %>
+                    </div>
+                    
+                  </div>
+                  <% } } %>
+                  <div class="clearfix"></div>
+                  <div class="create-offer hidden">
+                    <div class="well">
+                    <form class="row" method="post" action="/dashboard/account/offer/new">
+                      <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="selling">Selling asset :</label>
+                        <input type="text" class="form-control" class="selling" name="selling" placeholder="Selling">
+                        <% assets.forEach(function(asset,index){ %>
+                        <% if(asset.asset_issuer==account.id) {%>
+                        <label>
+                        <input type="radio" class="choose_asset" name="asset" value="<%= asset.asset_code %>"> <%= asset.asset_code %> 
+                        
+                      </label>
+                          <% } %>
+                        <% })%>
+                        <label>
+                          <input type="radio" class="choose_asset" name="asset" value="XLM"> Default </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                      <div class="form-group">
+                        <label for="buying">Buying asset :</label>
+                        <input type="text" class="form-control" class="buying" name="buying" placeholder="Buying">
+                        
+                        <% assets.forEach(function(asset,index){ %>
+                        <% if(asset.asset_issuer==account.id) {%>
+                        <label>
+                        <input class="choose_asset" type="radio" name="asset_des_code" value="<%= asset.asset_code %>"> <%= asset.asset_code %> 
+                        </label>
+                        <% } %>
+                        <% })%>
+                      <label>
+                          <input type="radio" class="choose_asset" name="asset_des_code" value="XLM"> Default </label>
+                      </div>
+                    </div>
+                      <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="amount">Amount :</label>
+                        <input type="text" class="form-control" id="amount" name="amount" placeholder="Amount">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="price">Price :</label>
+                        <input type="text" class="form-control" id="price" name="price" placeholder="Price">
+                      </div>
+                    </div>
+                      <div class="col-md-6">
+                        <input type="submit" class="btn btn-default" name="" value="Submit">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" name="account" value="<%= account.public_key %>">
+                        <input type="hidden" name="secret" value="<%= account.private_key %>">
+                        <input type="hidden" name="account_id" value="<%= account.id %>">
+                      </div>                  
+                    </form>
+
+                    </div>
+                  </div><!-- .create-offer -->
+                  <div class="clearfix"></div>
+                  <hr/>
+                </div>
+              <%}) %>
+            
+            </div>
+        </div>
+          </div>
+        </div>
+      </div><!-- .container-fluid -->   
+    <%- contentFor('pageScript') %>  
+    <script type="text/javascript">
+      $(document).ready(function(){      
+        $("#close-offer").click(function(){
+          $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            url: '/removeOffer',            
+            success: function(res) {
+              console.log(res);                
+            },
+            error: function(err)
+            {
+              console.log("error")
+              console.log(err)
+            }
+            });
+        });    
+      $(".create-stellar-offer").click(function(){
+        $(".create-stellar-offer").removeClass("btn-primary");
+        $("div.create-offer").addClass("hidden");
+        $(this).parents(".offers-stelar").find("div.create-offer").toggleClass("hidden");
+        $(this).parents(".offers-stelar").find("input[name='selling']").focus();
+        if(!$(this).hasClass("btn-primary"))
+        {
+          $(this).toggleClass("btn-primary");  
+        }
+        
+        });
+      $(".choose_asset").click(function(){
+          var selected_asset=$(this).val();
+          $(this).parents("div.form-group").find(".form-control").val(selected_asset);
+      });
+      });
+    </script>
